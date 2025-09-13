@@ -1,7 +1,6 @@
 # Train Car Crowding
 
-This repository contains a small Flask application that visualises live crowding levels for London Underground trains.
-It queries Transport for London's crowding API and overlays occupancy estimates onto a carriage diagram.
+A small Flask application that uses historical and live TfL data, along with station layouts, to estimate which part of tube trains will be the most crowded. A live version can be found [Here](https://3m4uez9a8p.us-east-1.awsapprunner.com/).
 
 ## Requirements
 

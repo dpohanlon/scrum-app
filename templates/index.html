@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+        <title>{{ page_title }}</title>
+    </head>
+    <body>
+        <h1 id="page-title">{{ page_title }}</h1>
+
+        <select id="station" onchange="updateCrowding()">
+            <option value="">--Select a station--</option>
+            {% for s in stations %}
+            <option value="{{ s }}">{{ s }}</option>
+            {% endfor %}
+        </select>
+
+        <select id="direction" onchange="updateCrowding()">
+            <option value="WB" selected>WB</option>
+            <option value="EB">EB</option>
+        </select>
+        <div id="crowding"></div>
+        <div style="position: relative; display: inline-block">
+            <span style="position: absolute; top: 0; left: 0; font-weight: bold; padding: 10px">
+                Front <br />
+                &larr;
+            </span>
+            <img id="graphic" alt="" />
+        </div>
+        <script>
+            let loadingInterval;
+
+            async function updateCrowding() {
+                const station = document.getElementById("station").value;
+                const direction = document.getElementById("direction").value;
+                if (!station) return;
+
+                const crowdingDiv = document.getElementById("crowding");
+                crowdingDiv.innerText = "";
+                document.getElementById("graphic").src = "";
+
+                // start loading dots
+                let dots = "";
+                loadingInterval = setInterval(() => {
+                    dots += ".";
+                    if (dots.length > 4) dots = ".";
+                    crowdingDiv.innerText = dots;
+                }, 1000);
+
+                try {
+                    const resp = await fetch(
+                        `/crowding?station=${encodeURIComponent(station)}&direction=${encodeURIComponent(direction)}`,
+                    );
+                    const payload = await resp.json();
+
+                    clearInterval(loadingInterval);
+                    crowdingDiv.innerText = "Station crowding fraction: " + payload.crowding;
+                    document.getElementById("graphic").src = payload.image_url;
+                } catch (e) {
+                    clearInterval(loadingInterval);
+                    crowdingDiv.innerText = "Error loading data";
+                }
+            }
+        </script>
+    </body>
+</html>

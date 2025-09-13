@@ -1,0 +1,10 @@
+flask==3.0.3
+gunicorn==23.0.0
+rapidfuzz
+requests
+cachetools
+numpy
+matplotlib
+scipy
+h5py
+pillow
